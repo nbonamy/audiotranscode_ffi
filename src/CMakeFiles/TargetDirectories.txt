@@ -1,0 +1,3 @@
+/Users/nbonamy/src/audiotranscode_ffi/src/CMakeFiles/audiotranscode_ffi.dir
+/Users/nbonamy/src/audiotranscode_ffi/src/CMakeFiles/edit_cache.dir
+/Users/nbonamy/src/audiotranscode_ffi/src/CMakeFiles/rebuild_cache.dir
