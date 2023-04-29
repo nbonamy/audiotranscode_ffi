@@ -1,5 +1,5 @@
 name: audiotranscode_ffi
-description: A new Flutter FFI plugin project.
+description: FFI Wrapper for FFmpeg audio conversion
 version: 0.0.1
 homepage: https://github.com/nbonamy/audiotranscode_ffi
 
