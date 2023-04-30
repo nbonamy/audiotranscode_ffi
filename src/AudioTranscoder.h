@@ -62,8 +62,8 @@ private:
                              AVCodecContext *output_codec_context,
                              int frame_size);
 
-  int convert_samples(const uint8_t **input_data,
-                      uint8_t **converted_data, const int frame_size,
+  int convert_samples(const uint8_t **input_data, const int input_samples,
+                      uint8_t **converted_data, const int converted_samples,
                       SwrContext *resample_context);
 
   int add_samples_to_fifo(AVAudioFifo *fifo,

@@ -26,6 +26,11 @@ using namespace std;
 #pragma comment(lib, "swresample-4.lib")
 #endif
 
+//
+// this code is basically the official transcode ffmpeg example
+// added with resampling code from https://github.com/tangshi/transcoding/
+//
+
 CAudioTranscoder::CAudioTranscoder()
 {
 }
@@ -242,8 +247,8 @@ int CAudioTranscoder::open_output_file(const char *filename,
   }
 
   /* TODO: allow change of sample rate */
-  // sample_rate = min(sample_rate, input_codec_context->sample_rate);
-  sample_rate = input_codec_context->sample_rate;
+  sample_rate = min(sample_rate, input_codec_context->sample_rate);
+  //sample_rate = input_codec_context->sample_rate;
 
   /* Set the basic encoder parameters.
    * The input file's sample rate is used to avoid a sample rate conversion. */
@@ -355,12 +360,13 @@ int CAudioTranscoder::init_resampler(AVCodecContext *input_codec_context,
     fprintf(stderr, "Could not allocate resample context\n");
     return AVERROR(ENOMEM);
   }
+
   /*
    * Perform a sanity check so that the number of converted samples is
    * not greater than the number of samples to be converted.
    * If the sample rates differ, this case has to be handled differently
    */
-  av_assert0(output_codec_context->sample_rate == input_codec_context->sample_rate);
+  //av_assert0(output_codec_context->sample_rate == input_codec_context->sample_rate);
 
   if ((error = swr_init(*resample_context)) < 0)
   /* Open the resampler with the specified parameters. */
@@ -546,31 +552,31 @@ int CAudioTranscoder::init_converted_samples(uint8_t ***converted_input_samples,
  * Convert the input audio samples into the output sample format.
  * The conversion happens on a per-frame basis, the size of which is
  * specified by frame_size.
- * @param      input_data       Samples to be decoded. The dimensions are
- *                              channel (for multi-channel audio), sample.
- * @param[out] converted_data   Converted samples. The dimensions are channel
- *                              (for multi-channel audio), sample.
- * @param      frame_size       Number of samples to be converted
+ * @param      input_data         Samples to be decoded. The dimensions are
+ *                                channel (for multi-channel audio), sample.
+ * @param      input_samples      Number of samples to be converted
+ * @param[out] converted_data     Converted samples. The dimensions are channel
+ *                                (for multi-channel audio), sample.
+ * @param      converted_samples  Number of samples expected
  * @param      resample_context Resample context for the conversion
- * @return Error code (0 if successful)
+ * @return Number of converted samples (<0 if error)
  */
-int CAudioTranscoder::convert_samples(const uint8_t **input_data,
-                                      uint8_t **converted_data, const int frame_size,
+int CAudioTranscoder::convert_samples(const uint8_t **input_data, const int input_samples,
+                                      uint8_t **converted_data, const int converted_samples,
                                       SwrContext *resample_context)
 {
-  int error;
+  int converted_nb_samples;
 
   /* Convert the samples using the resampler. */
-  if ((error = swr_convert(resample_context,
-                           converted_data, frame_size,
-                           input_data, frame_size)) < 0)
+  if ((converted_nb_samples = swr_convert(resample_context,
+                           converted_data, converted_samples,
+                           input_data, input_samples)) < 0)
   {
     fprintf(stderr, "Could not convert input samples (error '%s')\n",
-            av_err2str(error));
-    return error;
+            av_err2str(converted_nb_samples));
   }
 
-  return 0;
+  return converted_nb_samples;
 }
 
 /**
@@ -653,20 +659,31 @@ int CAudioTranscoder::read_decode_convert_and_store(AVAudioFifo *fifo,
   /* If there is decoded data, convert and store it. */
   if (data_present)
   {
+      int64_t delay;
+      int desired_nb_samples, converted_nb_samples;
+      delay = swr_get_delay(resampler_context, input_codec_context->sample_rate);
+
+      desired_nb_samples = (int)av_rescale_rnd(delay + input_frame->nb_samples,
+                                                output_codec_context->sample_rate,
+                                                input_codec_context->sample_rate,
+                                                AV_ROUND_UP);
+
     /* Initialize the temporary storage for the converted input samples. */
     if (init_converted_samples(&converted_input_samples, output_codec_context,
-                               input_frame->nb_samples))
+                               desired_nb_samples))
       goto cleanup;
 
     /* Convert the input samples to the desired output sample format.
      * This requires a temporary storage provided by converted_input_samples. */
-    if (convert_samples((const uint8_t **)input_frame->extended_data, converted_input_samples,
-                        input_frame->nb_samples, resampler_context))
+    converted_nb_samples = convert_samples((const uint8_t **)input_frame->extended_data, input_frame->nb_samples,
+                                            converted_input_samples, desired_nb_samples,
+                                            resampler_context);
+    if (converted_nb_samples < 0)
       goto cleanup;
 
     /* Add the converted input samples to the FIFO buffer for later processing. */
     if (add_samples_to_fifo(fifo, converted_input_samples,
-                            input_frame->nb_samples))
+                            converted_nb_samples))
       goto cleanup;
     ret = 0;
   }
