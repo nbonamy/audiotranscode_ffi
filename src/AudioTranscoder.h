@@ -25,7 +25,7 @@ public:
   CAudioTranscoder();
   virtual ~CAudioTranscoder();
 
-  bool Transcode(
+  int Transcode(
     const std::string &inputFile, const std::string &outputFile,
     TargetFormat targetFormat, int bits_per_sample, int sample_rate, int bitrate
   );

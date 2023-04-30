@@ -34,13 +34,12 @@ CAudioTranscoder::~CAudioTranscoder()
 {
 }
 
-bool CAudioTranscoder::Transcode(
+int CAudioTranscoder::Transcode(
   const std::string &inputFile, const std::string &outputFile,
   TargetFormat targetFormat, int bits_per_sample, int sample_rate, int bitrate
 ) {
   init_transcoding_params(targetFormat, bits_per_sample, sample_rate, bitrate);
-  int rc = transcode(inputFile.c_str(), outputFile.c_str());
-  return (rc == 0);
+  return transcode(inputFile.c_str(), outputFile.c_str());
 }
 
 void CAudioTranscoder::init_transcoding_params(TargetFormat targetFormat, int _bits_per_sample, int _sample_rate, int _bitrate)
