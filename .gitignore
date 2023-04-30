@@ -28,3 +28,12 @@ migrate_working_dir/
 .dart_tool/
 .packages
 build/
+
+# FFI related
+src/cmake_install.cmake
+src/CMakeCache.txt
+src/CMakeFiles
+src/Makefile
+src/*.dylib
+src/*.dll
+src/*.so
