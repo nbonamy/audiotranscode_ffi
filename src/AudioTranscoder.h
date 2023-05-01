@@ -19,7 +19,8 @@ public:
   {
     Mp3,
     Flac,
-    //Aac,
+    Aac,
+    Alac
   };
 
 public:
@@ -28,11 +29,11 @@ public:
 
   int Transcode(
     const std::string &inputFile, const std::string &outputFile,
-    TargetFormat targetFormat, int bits_per_sample, int sample_rate, int bitrate
+    TargetFormat targetFormat, int bitrate, int bits_per_sample, int sample_rate
   );
 
 private:
-  void init_transcoding_params(TargetFormat targetFormat, int bits_per_sample, int sample_rate, int bitrate);
+  void init_transcoding_params(TargetFormat targetFormat, int bitrate, int bits_per_sample, int sample_rate);
 
 private:
   int transcode(const char *input_filename, const char *output_filename);
@@ -89,10 +90,10 @@ private:
 
 private:
   int64_t pts; // global timestamp for the audio frames
-  int codec_id;
+  std::string codec_name;
   int sample_format;
-  int sample_rate;
   int bitrate;
   int bits_per_sample;
+  int sample_rate;
   int audio_stream_index;
 };

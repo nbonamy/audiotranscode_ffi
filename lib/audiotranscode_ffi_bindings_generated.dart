@@ -45,17 +45,36 @@ class AudiotranscodeFfiBindings {
   late final _transcode_to_mp3 = _transcode_to_mp3Ptr.asFunction<
       int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
 
+  int transcode_to_aac(
+    ffi.Pointer<ffi.Char> src,
+    ffi.Pointer<ffi.Char> dst,
+    int bitrate,
+  ) {
+    return _transcode_to_aac(
+      src,
+      dst,
+      bitrate,
+    );
+  }
+
+  late final _transcode_to_aacPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Int)>>('transcode_to_aac');
+  late final _transcode_to_aac = _transcode_to_aacPtr.asFunction<
+      int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int)>();
+
   int transcode_to_flac(
     ffi.Pointer<ffi.Char> src,
     ffi.Pointer<ffi.Char> dst,
-    int samplerate,
-    int bitspersample,
+    int bits_per_sample,
+    int sample_rate,
   ) {
     return _transcode_to_flac(
       src,
       dst,
-      samplerate,
-      bitspersample,
+      bits_per_sample,
+      sample_rate,
     );
   }
 
@@ -64,5 +83,26 @@ class AudiotranscodeFfiBindings {
           ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
               ffi.Int, ffi.Int)>>('transcode_to_flac');
   late final _transcode_to_flac = _transcode_to_flacPtr.asFunction<
+      int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int, int)>();
+
+  int transcode_to_alac(
+    ffi.Pointer<ffi.Char> src,
+    ffi.Pointer<ffi.Char> dst,
+    int bits_per_sample,
+    int sample_rate,
+  ) {
+    return _transcode_to_alac(
+      src,
+      dst,
+      bits_per_sample,
+      sample_rate,
+    );
+  }
+
+  late final _transcode_to_alacPtr = _lookup<
+      ffi.NativeFunction<
+          ffi.Int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>,
+              ffi.Int, ffi.Int)>>('transcode_to_alac');
+  late final _transcode_to_alac = _transcode_to_alacPtr.asFunction<
       int Function(ffi.Pointer<ffi.Char>, ffi.Pointer<ffi.Char>, int, int)>();
 }

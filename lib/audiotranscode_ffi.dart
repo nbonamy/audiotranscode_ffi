@@ -26,13 +26,13 @@ final DynamicLibrary _dylib = () {
 /// The bindings to the native functions in [_dylib].
 final AudiotranscodeFfiBindings _bindings = AudiotranscodeFfiBindings(_dylib);
 
-enum TranscodeFormat {
-  mp3,
-  flac,
-  //aac
-}
+enum TranscodeFormat { mp3, flac, aac, alac }
 
-Future<bool> transcodeMp3(String src, String dst, int bitrate) async {
+Future<bool> transcodeMp3(
+  String src,
+  String dst,
+  int bitrate,
+) async {
   final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
   final int requestId = _nextTranscodeRequestId++;
   final _TranscodeRequest request = _TranscodeRequest(
@@ -48,27 +48,31 @@ Future<bool> transcodeMp3(String src, String dst, int bitrate) async {
   return completer.future;
 }
 
-// Future<bool> transcodeAac(String src, String dst, int bitrate) async {
-//   final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
-//   final int requestId = _nextTranscodeRequestId++;
-//   final _TranscodeRequest request = _TranscodeRequest(
-//     requestId,
-//     src,
-//     dst,
-//     TranscodeFormat.aac,
-//     bitrate: bitrate,
-//   );
-//   final Completer<bool> completer = Completer<bool>();
-//   _transcodeRequests[requestId] = completer;
-//   helperIsolateSendPort.send(request);
-//   return completer.future;
-// }
+Future<bool> transcodeAac(
+  String src,
+  String dst,
+  int bitrate,
+) async {
+  final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
+  final int requestId = _nextTranscodeRequestId++;
+  final _TranscodeRequest request = _TranscodeRequest(
+    requestId,
+    src,
+    dst,
+    TranscodeFormat.aac,
+    bitrate: bitrate,
+  );
+  final Completer<bool> completer = Completer<bool>();
+  _transcodeRequests[requestId] = completer;
+  helperIsolateSendPort.send(request);
+  return completer.future;
+}
 
 Future<bool> transcodeFlac(
   String src,
   String dst,
-  int samplerate,
-  int bitspersample,
+  int bitsPerSample,
+  int sampleRate,
 ) async {
   final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
   final int requestId = _nextTranscodeRequestId++;
@@ -77,8 +81,30 @@ Future<bool> transcodeFlac(
     src,
     dst,
     TranscodeFormat.flac,
-    samplerate: samplerate,
-    bitspersample: bitspersample,
+    bitsPerSample: bitsPerSample,
+    sampleRate: sampleRate,
+  );
+  final Completer<bool> completer = Completer<bool>();
+  _transcodeRequests[requestId] = completer;
+  helperIsolateSendPort.send(request);
+  return completer.future;
+}
+
+Future<bool> transcodeAlac(
+  String src,
+  String dst,
+  int bitsPerSample,
+  int sampleRate,
+) async {
+  final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
+  final int requestId = _nextTranscodeRequestId++;
+  final _TranscodeRequest request = _TranscodeRequest(
+    requestId,
+    src,
+    dst,
+    TranscodeFormat.alac,
+    bitsPerSample: bitsPerSample,
+    sampleRate: sampleRate,
   );
   final Completer<bool> completer = Completer<bool>();
   _transcodeRequests[requestId] = completer;
@@ -94,18 +120,18 @@ class _TranscodeRequest {
   final String src;
   final String dest;
   final TranscodeFormat format;
-  final int samplerate;
-  final int bitspersample;
   final int bitrate;
+  final int bitsPerSample;
+  final int sampleRate;
 
   const _TranscodeRequest(
     this.id,
     this.src,
     this.dest,
     this.format, {
-    this.samplerate = 0,
-    this.bitspersample = 0,
     this.bitrate = 0,
+    this.bitsPerSample = 0,
+    this.sampleRate = 0,
   });
 }
 
@@ -168,9 +194,24 @@ Future<SendPort> _helperIsolateSendPort = () async {
             result = _bindings.transcode_to_flac(
               data.src.toNativeUtf8().cast<Char>(),
               data.dest.toNativeUtf8().cast<Char>(),
-              data.samplerate,
-              data.bitspersample,
+              data.bitsPerSample,
+              data.sampleRate,
             );
+          } else if (data.format == TranscodeFormat.aac) {
+            result = _bindings.transcode_to_aac(
+              data.src.toNativeUtf8().cast<Char>(),
+              data.dest.toNativeUtf8().cast<Char>(),
+              data.bitrate,
+            );
+          } else if (data.format == TranscodeFormat.alac) {
+            result = _bindings.transcode_to_alac(
+              data.src.toNativeUtf8().cast<Char>(),
+              data.dest.toNativeUtf8().cast<Char>(),
+              data.bitsPerSample,
+              data.sampleRate,
+            );
+          } else {
+            throw Exception('Transcode format not implemented');
           }
           final _TranscodeResponse response = _TranscodeResponse(
             data.id,

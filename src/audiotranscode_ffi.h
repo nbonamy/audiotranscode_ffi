@@ -24,7 +24,9 @@ extern "C" {
 #endif
 
   FFI_PLUGIN_EXPORT bool transcode_to_mp3(const char* src, const char* dst, int bitrate);
-  FFI_PLUGIN_EXPORT bool transcode_to_flac(const char* src, const char* dst, int samplerate, int bitspersample);
+  FFI_PLUGIN_EXPORT bool transcode_to_aac(const char* src, const char* dst, int bitrate);
+  FFI_PLUGIN_EXPORT bool transcode_to_flac(const char* src, const char* dst, int bits_per_sample, int sample_rate);
+  FFI_PLUGIN_EXPORT bool transcode_to_alac(const char* src, const char* dst, int bits_per_sample, int sample_rate);
 
 #ifdef __cplusplus
 }

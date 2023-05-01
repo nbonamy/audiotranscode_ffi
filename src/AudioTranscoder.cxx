@@ -41,33 +41,45 @@ CAudioTranscoder::~CAudioTranscoder()
 
 int CAudioTranscoder::Transcode(
   const std::string &inputFile, const std::string &outputFile,
-  TargetFormat targetFormat, int bits_per_sample, int sample_rate, int bitrate
+  TargetFormat targetFormat, int bitrate, int bits_per_sample, int sample_rate
 ) {
-  init_transcoding_params(targetFormat, bits_per_sample, sample_rate, bitrate);
+  init_transcoding_params(targetFormat, bitrate, bits_per_sample, sample_rate);
   return transcode(inputFile.c_str(), outputFile.c_str());
 }
 
-void CAudioTranscoder::init_transcoding_params(TargetFormat targetFormat, int _bits_per_sample, int _sample_rate, int _bitrate)
+void CAudioTranscoder::init_transcoding_params(TargetFormat targetFormat, int _bitrate, int _bits_per_sample, int _sample_rate)
 {
   // depends on format
   if (targetFormat == CAudioTranscoder::Mp3) {
-    codec_id = AV_CODEC_ID_MP3;
+    codec_name = "libmp3lame";
     sample_format = AV_SAMPLE_FMT_FLTP;
+    bitrate = _bitrate;
     bits_per_sample = 16;
     sample_rate = 44100;
+  } else if (targetFormat == CAudioTranscoder::Aac) {
+    codec_name = "aac_at";
+    sample_format = AV_SAMPLE_FMT_S16;
     bitrate = _bitrate;
-  // } else if (targetFormat == CAudioTranscoder::Aac) {
-  //   codec_id = AV_CODEC_ID_AAC;
-  //   sample_format = AV_SAMPLE_FMT_FLTP;
-  //   bits_per_sample = 16;
-  //   sample_rate = 44100;
-  //   bitrate = _bitrate;
+    bits_per_sample = 16;
+    sample_rate = 44100;
   } else if (targetFormat == CAudioTranscoder::Flac) {
-    codec_id = AV_CODEC_ID_FLAC;
+    codec_name = "flac";
     sample_format = _bits_per_sample == 16 ? AV_SAMPLE_FMT_S16 : AV_SAMPLE_FMT_S32;
+    bitrate = 0;
     bits_per_sample = _bits_per_sample;
     sample_rate = _sample_rate;
+  } else if (targetFormat == CAudioTranscoder::Alac) {
+    codec_name = "alac";
+    sample_format = _bits_per_sample == 16 ? AV_SAMPLE_FMT_S16P : AV_SAMPLE_FMT_S32P;
     bitrate = 0;
+    bits_per_sample = _bits_per_sample;
+    sample_rate = _sample_rate;
+  // } else if (targetFormat == CAudioTranscoder::Alac) {
+  //   codec_name = "alac_at";
+  //   sample_format = _bits_per_sample == 16 ? AV_SAMPLE_FMT_S16 : AV_SAMPLE_FMT_S32;
+  //   bitrate = 0;
+  //   bits_per_sample = _bits_per_sample;
+  //   sample_rate = _sample_rate;
   }
 }
 
@@ -230,7 +242,7 @@ int CAudioTranscoder::open_output_file(const char *filename,
   }
 
   /* Find the encoder to be used by its name. */
-  if (!(output_codec = avcodec_find_encoder((AVCodecID)codec_id)))
+  if (!(output_codec = avcodec_find_encoder_by_name(codec_name.c_str())))
   {
     fprintf(stderr, "Could not find a valid encoder.\n");
     goto cleanup;
@@ -253,7 +265,7 @@ int CAudioTranscoder::open_output_file(const char *filename,
   }
 
   /* TODO: allow change of sample rate */
-  sample_rate = min(sample_rate, input_codec_context->sample_rate);
+  //sample_rate = min(sample_rate, input_codec_context->sample_rate);
   //sample_rate = input_codec_context->sample_rate;
 
   /* Set the basic encoder parameters.
@@ -263,9 +275,9 @@ int CAudioTranscoder::open_output_file(const char *filename,
   avctx->sample_fmt = (AVSampleFormat)sample_format;
   avctx->bits_per_raw_sample = bits_per_sample;
   avctx->bit_rate = bitrate;
+  
   /* Allow the use of the experimental AAC encoder. */
-
-  avctx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
+  //avctx->strict_std_compliance = FF_COMPLIANCE_EXPERIMENTAL;
 
   /* Set the sample rate for the container. */
   stream->time_base.den = sample_rate;
