@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'audiotranscode_ffi'
-  s.version          = '0.0.1'
+  s.version          = '1.0.0'
   s.summary          = 'Audio Transcoding using FFmpeg'
   s.description      = 'Audio Transcoding using FFmpeg for Dart/Flutter'
   s.homepage         = 'https://github.com/nbonamy/audiotranscode_ffi'
@@ -12,12 +12,7 @@ Pod::Spec.new do |s|
   s.source_files     = 'Classes/**/*'
   s.dependency 'FlutterMacOS'
 
-  s.xcconfig = {
-    'SYSTEM_HEADER_SEARCH_PATHS' => "#{ENV['HOMEBREW_PREFIX']}/include",
-    'LIBRARY_SEARCH_PATHS' => "#{ENV['HOMEBREW_PREFIX']}/lib"
-  }
-
-  s.libraries = 'avcodec', 'avformat', 'avutil', 'swresample'
+  s.dependency 'ffmpeg-kit-macos-audio', '5.1'
 
   s.platform = :osx, '13.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES' }
