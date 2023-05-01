@@ -56,6 +56,12 @@ void CAudioTranscoder::init_transcoding_params(TargetFormat targetFormat, int _b
     bits_per_sample = 16;
     sample_rate = 44100;
     bitrate = _bitrate;
+  // } else if (targetFormat == CAudioTranscoder::Aac) {
+  //   codec_id = AV_CODEC_ID_AAC;
+  //   sample_format = AV_SAMPLE_FMT_FLTP;
+  //   bits_per_sample = 16;
+  //   sample_rate = 44100;
+  //   bitrate = _bitrate;
   } else if (targetFormat == CAudioTranscoder::Flac) {
     codec_id = AV_CODEC_ID_FLAC;
     sample_format = _bits_per_sample == 16 ? AV_SAMPLE_FMT_S16 : AV_SAMPLE_FMT_S32;
@@ -362,6 +368,10 @@ int CAudioTranscoder::init_resampler(AVCodecContext *input_codec_context,
   }
 
   /*
+   * Enable soxr resampling 
+  */
+ av_opt_set_int(*resample_context, "resampler", SWR_ENGINE_SOXR, 0);
+
   /*
    * Perform a sanity check so that the number of converted samples is
    * not greater than the number of samples to be converted.

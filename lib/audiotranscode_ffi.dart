@@ -26,7 +26,11 @@ final DynamicLibrary _dylib = () {
 /// The bindings to the native functions in [_dylib].
 final AudiotranscodeFfiBindings _bindings = AudiotranscodeFfiBindings(_dylib);
 
-enum TranscodeFormat { mp3, flac }
+enum TranscodeFormat {
+  mp3,
+  flac,
+  //aac
+}
 
 Future<bool> transcodeMp3(String src, String dst, int bitrate) async {
   final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
@@ -43,6 +47,22 @@ Future<bool> transcodeMp3(String src, String dst, int bitrate) async {
   helperIsolateSendPort.send(request);
   return completer.future;
 }
+
+// Future<bool> transcodeAac(String src, String dst, int bitrate) async {
+//   final SendPort helperIsolateSendPort = await _helperIsolateSendPort;
+//   final int requestId = _nextTranscodeRequestId++;
+//   final _TranscodeRequest request = _TranscodeRequest(
+//     requestId,
+//     src,
+//     dst,
+//     TranscodeFormat.aac,
+//     bitrate: bitrate,
+//   );
+//   final Completer<bool> completer = Completer<bool>();
+//   _transcodeRequests[requestId] = completer;
+//   helperIsolateSendPort.send(request);
+//   return completer.future;
+// }
 
 Future<bool> transcodeFlac(
   String src,

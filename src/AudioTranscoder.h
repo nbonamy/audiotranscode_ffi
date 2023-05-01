@@ -19,6 +19,7 @@ public:
   {
     Mp3,
     Flac,
+    //Aac,
   };
 
 public:
