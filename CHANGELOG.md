@@ -10,3 +10,7 @@
 ## 1.0.1
 
 * soxr resampling
+
+## 1.1.0
+
+* AAC and ALAC support

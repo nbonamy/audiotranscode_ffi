@@ -1,6 +1,6 @@
 name: audiotranscode_ffi
 description: FFI Wrapper for FFmpeg audio conversion
-version: 1.0.1
+version: 1.1.0
 homepage: https://github.com/nbonamy/audiotranscode_ffi
 
 environment:

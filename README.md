@@ -10,6 +10,8 @@ A dart wrapper for FFmpeg audio conversion.
 Supported target formats:
 - MP3
 - FLAC
+- AAC
+- ALAC/M4A (Apple Lossless)
 
 ## Dependencies
 
