@@ -14,3 +14,7 @@
 ## 1.1.0
 
 * AAC and ALAC support
+
+## 1.2.0
+
+* FLAC SeekTable creation

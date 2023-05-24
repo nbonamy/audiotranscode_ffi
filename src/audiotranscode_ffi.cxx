@@ -1,5 +1,6 @@
 #include "audiotranscode_ffi.h"
 #include "AudioTranscoder.h"
+#include "FlacMetadata.h"
 
 FFI_PLUGIN_EXPORT bool transcode_to_mp3(const char* src, const char* dst, int bitrate)
 {
@@ -19,6 +20,7 @@ FFI_PLUGIN_EXPORT bool transcode_to_flac(const char* src, const char* dst, int b
 {
   CAudioTranscoder transcoder;
   int rc = transcoder.Transcode(src, dst, CAudioTranscoder::Flac, 0, bits_per_sample, sample_rate);
+  if (rc == 0) FlacMetadata::addSeekTable(dst);
   return (rc == 0);
 }
 

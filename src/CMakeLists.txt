@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.10)
 project(audiotranscode_ffi_library VERSION 0.0.1 LANGUAGES CXX)
 
 add_library(
-  audiotranscode_ffi SHARED "audiotranscode_ffi.cxx" "AudioTranscoder.cxx"
+  audiotranscode_ffi SHARED "audiotranscode_ffi.cxx" "AudioTranscoder.cxx" "FlacMetadata.cxx"
 )
 
 set_target_properties(audiotranscode_ffi PROPERTIES
@@ -26,4 +26,5 @@ target_link_libraries(audiotranscode_ffi PRIVATE
   "$ENV{HOMEBREW_PREFIX}/lib/libavformat.dylib"
   "$ENV{HOMEBREW_PREFIX}/lib/libavutil.dylib"
   "$ENV{HOMEBREW_PREFIX}/lib/libswresample.dylib"
+  "$ENV{HOMEBREW_PREFIX}/lib/libFLAC.dylib"
 )

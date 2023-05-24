@@ -2,3 +2,4 @@
 // See the comment in ../{projectName}}.podspec for more information.
 #include "../../src/audiotranscode_ffi.cxx"
 #include "../../src/AudioTranscoder.cxx"
+#include "../../src/FlacMetadata.cxx"
