@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
+// import 'dart:async';
 
-import 'package:audiotranscode_ffi/audiotranscode_ffi.dart'
-    as audiotranscode_ffi;
+// import 'package:audiotranscode_ffi/audiotranscode_ffi.dart'
+//     as audiotranscode_ffi;
 
 void main() {
   runApp(const MyApp());
@@ -38,9 +38,9 @@ class _MyAppState extends State<MyApp> {
         body: SingleChildScrollView(
           child: Container(
             padding: const EdgeInsets.all(10),
-            child: Column(
+            child: const Column(
               children: [
-                const Text(
+                Text(
                   'This calls a native function through FFI that is shipped as source in the package. '
                   'The native code is built as part of the Flutter Runner build.',
                   style: textStyle,

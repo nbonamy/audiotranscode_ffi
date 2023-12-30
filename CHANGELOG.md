@@ -18,3 +18,9 @@
 ## 1.2.0
 
 * FLAC SeekTable creation
+
+
+## 1.3.0
+
+* FFmpeg version upgrade
+* Fixed memory leak on AVPacket

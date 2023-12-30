@@ -521,7 +521,7 @@ int CAudioTranscoder::decode_audio_frame(AVFrame *frame,
   }
 
 cleanup:
-  av_packet_unref(input_packet);
+  av_packet_free(&input_packet);
   return error;
 }
 
@@ -846,7 +846,7 @@ int CAudioTranscoder::encode_audio_frame(AVFrame *frame,
   }
 
 cleanup:
-  av_packet_unref(output_packet);
+  av_packet_free(&output_packet);
   return error;
 }
 

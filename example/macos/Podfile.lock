@@ -1,9 +1,9 @@
 PODS:
   - audiotranscode_ffi (1.1.0):
-    - ffmpeg-kit-macos-audio (= 5.1)
+    - ffmpeg-kit-macos-audio (= 6.0)
     - FLAC-framework (= 1.4.2-2)
     - FlutterMacOS
-  - ffmpeg-kit-macos-audio (5.1)
+  - ffmpeg-kit-macos-audio (6.0)
   - FLAC-framework (1.4.2-2)
   - FlutterMacOS (1.0.0)
 
@@ -23,11 +23,11 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
 
 SPEC CHECKSUMS:
-  audiotranscode_ffi: 463db511c09bc19f974055764993a9e43685aa30
-  ffmpeg-kit-macos-audio: 1c0a574fd51501c7227a2c8181ffd4e9c2005051
+  audiotranscode_ffi: 153422a9100a79617b74ae9c5992cde868bed70e
+  ffmpeg-kit-macos-audio: d1fa3fe42922de39a494c1ac73985524f1c27131
   FLAC-framework: 92d06bed602b884866a5d58048ace29c3206cada
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
 
-PODFILE CHECKSUM: 8d40c19d3cbdb380d870685c3a564c989f1efa52
+PODFILE CHECKSUM: 137ddf7b4dbe5a83427ebf04ae8dea674cfd87fa
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.14.3

@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
   s.source_files     = 'Classes/**/*'
   s.dependency 'FlutterMacOS'
 
-  s.dependency 'ffmpeg-kit-macos-audio', '5.1'
+  s.dependency 'ffmpeg-kit-macos-audio', '6.0'
   s.dependency 'FLAC-framework', '1.4.2-2'
 
   s.platform = :osx, '13.0'

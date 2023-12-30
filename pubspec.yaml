@@ -1,10 +1,10 @@
 name: audiotranscode_ffi
 description: FFI Wrapper for FFmpeg audio conversion
-version: 1.2.0
+version: 1.3.0
 homepage: https://github.com/nbonamy/audiotranscode_ffi
 
 environment:
-  sdk: '>=2.19.6 <3.0.0'
+  sdk: '>=2.19.6 <4.0.0'
   flutter: ">=2.11.0"
 
 dependencies:
